@@ -3,7 +3,7 @@ from datetime import datetime
 
 class Memory:
     def __init__(self):
-        self.memory = []
+        self.memory = json.load(open("data/agent_memory.json"))
 
     def add_interaction(self, interaction, role):
         
@@ -14,8 +14,8 @@ class Memory:
             "role": role,
             "timestamp": datetime.now().isoformat()
         })
-        print(f"Added interaction to memory: {interaction} by {role}")
-        print(f"Current memory: {len(self.memory)}")
+        with open("data/agent_memory.json", 'w') as f:
+            json.dump(self.memory, f, indent=4)
 
     def recall(self):
-        return self.memory
+        return sorted(self.memory, key=lambda x: x['timestamp'])

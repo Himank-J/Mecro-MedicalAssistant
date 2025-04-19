@@ -2,10 +2,10 @@
     {
         "doctor_name": "Dr. Rohan Shravan",
         "doctor_specialization": "Ophthalmologist",
-        "doctor_address": "Pune, Maharashtra, India",
+        "doctor_address": "Wakad, Pune, Maharashtra, India",
         "doctor_gender": "Male",
         "doctor_languages": ["English", "Hindi"],
-        "clinic_name": "Heart Care Clinic",
+        "clinic_name": "Eye Care Clinic",
         "doctor_availability": [
             {
                 "day": "Monday",
@@ -34,12 +34,46 @@
         ]
     },
     {
+        "doctor_name": "Dr. Ravi Menon",
+        "doctor_specialization": "Ophthalmologist",
+        "doctor_address": "Shivaji Nagar, Pune, Maharashtra, India",
+        "doctor_gender": "Male",
+        "doctor_languages": ["Malayalam", "Tamil"],
+        "clinic_name": "Eye Specialist Clinic",
+        "doctor_availability": [
+            {
+                "day": "Monday",
+                "start_time": "09:00",
+                "end_time": "17:00",
+                "is_available": true
+            },
+            {
+                "day": "Wednesday",
+                "start_time": "09:00",
+                "end_time": "17:00",
+                "is_available": true
+            },
+            {
+                "day": "Friday",
+                "start_time": "09:00",
+                "end_time": "17:00",
+                "is_available": true
+            },
+            {
+                "day": "Saturday",
+                "start_time": "09:00",
+                "end_time": "13:00",
+                "is_available": true
+            }
+        ]
+    },
+    {
         "doctor_name": "Dr. Priya Sharma",
-        "doctor_specialization": "Pediatrician",
-        "doctor_address": "45 Gandhi Road, Mumbai, India",
+        "doctor_specialization": "Ophthalmologist",
+        "doctor_address": "Pimpri, Pune, Maharashtra, India",
         "doctor_gender": "Female",
-        "doctor_languages": ["English", "Hindi", "Marathi"],
-        "clinic_name": "Child Care Clinic",
+        "doctor_languages": ["English", "Marathi"],
+        "clinic_name": "Eye Opticals Clinic",
         "doctor_availability": [
             {
                 "day": "Monday",
@@ -301,40 +335,6 @@
                 "day": "Saturday",
                 "start_time": "10:00",
                 "end_time": "14:00",
-                "is_available": true
-            }
-        ]
-    },
-    {
-        "doctor_name": "Dr. Ravi Menon",
-        "doctor_specialization": "Ophthalmologist",
-        "doctor_address": "Shivaji Nagar, Pune, India",
-        "doctor_gender": "Male",
-        "doctor_languages": ["English", "Malayalam", "Tamil"],
-        "clinic_name": "Eye Care Clinic",
-        "doctor_availability": [
-            {
-                "day": "Monday",
-                "start_time": "09:00",
-                "end_time": "17:00",
-                "is_available": true
-            },
-            {
-                "day": "Wednesday",
-                "start_time": "09:00",
-                "end_time": "17:00",
-                "is_available": true
-            },
-            {
-                "day": "Friday",
-                "start_time": "09:00",
-                "end_time": "17:00",
-                "is_available": true
-            },
-            {
-                "day": "Saturday",
-                "start_time": "09:00",
-                "end_time": "13:00",
                 "is_available": true
             }
         ]

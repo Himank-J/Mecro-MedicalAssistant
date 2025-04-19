@@ -1,11 +1,11 @@
 import json
-from config import client
-from models import Decision
+from helpers.config import client
+from helpers.models import Decision
 from typing import List
 
 class DecisionMaker:
 
-    def make_decision(self, patient_input: str, memory: List[dict]):
+    def make_decision(self, patient_input: str, memory: List[dict]):        
         PROMPT = f"""
         You are given a patient's input as well as past interactions with the medical assistant and you need to make a decision on what to do next.
         Analyse the patient's input and past interactions carefully before making a decision.
@@ -33,4 +33,4 @@ class DecisionMaker:
                 'response_schema': Decision,
             }
         )
-        return json.loads(response.text)      
+        return json.loads(response.text)  

@@ -1,6 +1,6 @@
 import json
-from config import client
-from models import PatientDetails
+from helpers.config import client
+from helpers.models import PatientDetails
 
 def extract_patient_details(text: str) -> dict:
     PROMPT = """

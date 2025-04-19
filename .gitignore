@@ -1,3 +1,5 @@
 .env
 mecro
 __pycache__
+app_tokens.json
+client_secret_787538940061-v4ledsjcugs34fkc7a7boh0cr91triod.apps.googleusercontent.com.json

@@ -1,0 +1,22 @@
+[
+    {
+        "interaction": "{\"patient_name\": \"Himank\", \"patient_details\": {\"patient_name\": \"Himank\", \"patient_age\": 24, \"patient_gender\": \"Male\", \"patient_phone_number\": null, \"patient_email\": null, \"patient_preferences\": {\"patient_location\": \"Wakad\", \"patient_language\": \"English or Hindi\", \"preferred_doctor_gender\": null, \"preferred_time_slot\": null}, \"patient_medical_history\": null, \"patient_current_symptoms\": [\"itchy eyes\", \"redness\", \"watery eyes\", \"eye pain\"]}}",
+        "role": "medical_assistant",
+        "timestamp": "2025-04-19T16:13:55.080522"
+    },
+    {
+        "interaction": "{\"patient_input\": \"patient_input\", \"suggested_doctors\": [{\"doctor_name\": \"Dr. Rohan Shravan\", \"doctor_specialization\": \"Ophthalmologist\", \"doctor_address\": \"Wakad, Pune, Maharashtra, India\", \"doctor_gender\": \"Male\", \"doctor_languages\": [\"English\", \"Hindi\"], \"clinic_name\": \"Eye Care Clinic\", \"doctor_availability\": [\"Monday: 09:00-17:00\", \"Tuesday: 09:00-17:00\", \"Wednesday: 09:00-17:00\"]}, {\"doctor_name\": \"Dr. Priya Sharma\", \"doctor_specialization\": \"Ophthalmologist\", \"doctor_address\": \"Pimpri, Pune, Maharashtra, India\", \"doctor_gender\": \"Female\", \"doctor_languages\": [\"English\", \"Marathi\"], \"clinic_name\": \"Eye Opticals Clinic\", \"doctor_availability\": [\"Monday: 10:00-18:00\", \"Tuesday: 10:00-18:00\", \"Wednesday: 10:00-18:00\", \"Friday: 10:00-16:00\"]}, {\"doctor_name\": \"Dr. Ravi Menon\", \"doctor_specialization\": \"Ophthalmologist\", \"doctor_address\": \"Shivaji Nagar, Pune, Maharashtra, India\", \"doctor_gender\": \"Male\", \"doctor_languages\": [\"Malayalam\", \"Tamil\"], \"clinic_name\": \"Eye Specialist Clinic\", \"doctor_availability\": [\"Monday: 09:00-17:00\", \"Wednesday: 09:00-17:00\", \"Friday: 09:00-17:00\", \"Saturday: 09:00-13:00\"]}]}",
+        "role": "medical_assistant",
+        "timestamp": "2025-04-19T16:13:58.892389"
+    },
+    {
+        "interaction": "{\"patient_input\": \"book appointment with Dr. Rohan Shravan for 23rd April 11:00 AM\", \"appointment_details\": {\"patient_name\": \"Himank\", \"patient_age\": 24, \"patient_gender\": \"Male\", \"patient_symptoms\": [\"itchy eyes\", \"redness\", \"watery eyes\", \"eye pain\"], \"patient_location\": \"Wakad\", \"patient_language\": \"English or Hindi\", \"preferred_time_slot\": \"Any\", \"doctor_name\": \"Dr. Rohan Shravan\", \"clinic_name\": \"Eye Care Clinic\", \"appointment_date\": \"2024-07-24\", \"appointment_id\": \"3a347b5f-47dc-4e5a-949e-a3bdd9e22572\"}}",
+        "role": "medical_assistant",
+        "timestamp": "2025-04-19T16:16:53.802641"
+    },
+    {
+        "interaction": "{\"recipient_id\": \"himankvjain@gmail.com\", \"reminder_details\": {\"status\": \"success\", \"message_id\": \"1964da98cd8dafb2\"}}",
+        "role": "medical_assistant",
+        "timestamp": "2025-04-19T16:17:59.542287"
+    }
+]

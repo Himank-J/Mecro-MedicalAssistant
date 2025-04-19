@@ -3,71 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medical Assistant Chat</title>
+    <title>Mecro - Your Medical Assistant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #2196f3;
+            --secondary-color: #1976d2;
+            --background-color: #f0f7ff;
+            --chat-user: #e3f2fd;
+            --chat-assistant: #ffffff;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
+            font-family: 'Poppins', Arial, sans-serif;
+            max-width: 1000px;
             margin: 0 auto;
             padding: 20px;
-            background-color: #f5f5f5;
+            background-color: var(--background-color);
+            color: #333;
         }
+
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            border-radius: 10px;
+        }
+
+        .header-text {
+            flex-grow: 1;
+        }
+
+        .header-text h1 {
+            margin: 0;
+            color: var(--primary-color);
+            font-size: 24px;
+        }
+
+        .header-text p {
+            margin: 5px 0 0;
+            color: #666;
+            font-size: 14px;
+        }
+
         .chat-container {
             background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             padding: 20px;
             margin-bottom: 20px;
             height: 500px;
             overflow-y: auto;
         }
+
         .message {
             margin-bottom: 15px;
-            padding: 10px;
-            border-radius: 5px;
+            padding: 15px;
+            border-radius: 10px;
+            max-width: 70%;
+            position: relative;
+            animation: fadeIn 0.3s ease-in;
         }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .user-message {
-            background-color: #e3f2fd;
-            margin-left: 20%;
+            background-color: var(--chat-user);
+            margin-left: auto;
+            border-bottom-right-radius: 5px;
         }
+
         .assistant-message {
-            background-color: #f5f5f5;
-            margin-right: 20%;
+            background-color: var(--chat-assistant);
+            margin-right: auto;
+            border-bottom-left-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
+
+        .message-header {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
         .input-container {
             display: flex;
             gap: 10px;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
+
         input[type="text"] {
             flex-grow: 1;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
             font-size: 16px;
+            transition: border-color 0.3s ease;
+            font-family: 'Poppins', sans-serif;
         }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
         button {
-            padding: 10px 20px;
-            background-color: #2196f3;
+            padding: 15px 30px;
+            background-color: var(--primary-color);
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 10px;
             cursor: pointer;
             font-size: 16px;
+            font-weight: 500;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+            font-family: 'Poppins', sans-serif;
         }
+
         button:hover {
-            background-color: #1976d2;
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
         }
+
         button:disabled {
             background-color: #bdbdbd;
             cursor: not-allowed;
+            transform: none;
+        }
+
+        .typing-indicator {
+            display: none;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #666;
         }
     </style>
 </head>
 <body>
-    <h1>Medical Assistant Chat</h1>
-    <div class="chat-container" id="chat-container"></div>
+    <div class="header">
+        <img src="static/logo.png" alt="Mecro Logo" class="logo">
+        <div class="header-text">
+            <h1>Mecro</h1>
+            <p>Your Intelligent Medical Assistant</p>
+        </div>
+    </div>
+    <div class="chat-container" id="chat-container">
+        <div class="message assistant-message">
+            <div class="message-header">Mecro</div>
+            Hello! I'm Mecro, your medical assistant. How can I help you today?
+        </div>
+    </div>
+    <div class="typing-indicator" id="typing-indicator">
+        Mecro is typing...
+    </div>
     <div class="input-container">
-        <input type="text" id="user-input" placeholder="Type your message here..." />
+        <input type="text" id="user-input" placeholder="Type your health-related question..." />
         <button onclick="sendMessage()" id="send-button">Send</button>
     </div>
 
@@ -75,6 +185,7 @@
         const chatContainer = document.getElementById('chat-container');
         const userInput = document.getElementById('user-input');
         const sendButton = document.getElementById('send-button');
+        const typingIndicator = document.getElementById('typing-indicator');
 
         userInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
@@ -86,13 +197,13 @@
             const message = userInput.value.trim();
             if (!message) return;
 
-            // Disable input and button while processing
             userInput.disabled = true;
             sendButton.disabled = true;
-
-            // Add user message to chat
+            
             addMessage(message, 'user');
             userInput.value = '';
+            
+            typingIndicator.style.display = 'block';
 
             try {
                 const response = await fetch('http://localhost:8000/chat', {
@@ -104,13 +215,14 @@
                 });
 
                 const data = await response.json();
+                typingIndicator.style.display = 'none';
                 addMessage(data.response, 'assistant');
             } catch (error) {
+                typingIndicator.style.display = 'none';
                 addMessage('Sorry, there was an error processing your request.', 'assistant');
                 console.error('Error:', error);
             }
 
-            // Re-enable input and button
             userInput.disabled = false;
             sendButton.disabled = false;
             userInput.focus();
@@ -119,7 +231,14 @@
         function addMessage(text, role) {
             const messageDiv = document.createElement('div');
             messageDiv.classList.add('message', `${role}-message`);
-            messageDiv.textContent = text;
+            
+            const headerDiv = document.createElement('div');
+            headerDiv.classList.add('message-header');
+            headerDiv.textContent = role === 'user' ? 'You' : 'Mecro';
+            
+            messageDiv.appendChild(headerDiv);
+            messageDiv.appendChild(document.createTextNode(text));
+            
             chatContainer.appendChild(messageDiv);
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }

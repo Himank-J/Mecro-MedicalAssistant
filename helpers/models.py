@@ -21,12 +21,6 @@ class PatientDetails(BaseModel):
 class Decision(BaseModel):
   decision: str
 
-class DoctorAvailability(BaseModel):
-  day: str
-  start_time: str
-  end_time: str
-  is_available: bool
-
 class DoctorSuggestion(BaseModel):
   doctor_name: str
   doctor_specialization: str
@@ -34,24 +28,9 @@ class DoctorSuggestion(BaseModel):
   doctor_gender: str
   doctor_languages: List[str]
   clinic_name: str
-  doctor_availability: List[DoctorAvailability]
+  doctor_availability: List[str]
 
-class DoctorCard(BaseModel):
-  name: str
-  specialization: str
-  clinic_name: str
-  address: str
-  languages: List[str]
-  available_days: List[str]
-  timings: str
-  gender: str
-  card_color: Optional[str] = "#f0f0f0"  # Default background color
-  rating: Optional[float] = None
-  experience_years: Optional[int] = None
-  consultation_fee: Optional[str] = None
-  profile_image: Optional[str] = None
-
-class MakeAppointment(BaseModel):
+class Appointment(BaseModel):
   patient_name: str
   patient_age: int
   patient_gender: str
@@ -60,5 +39,5 @@ class MakeAppointment(BaseModel):
   patient_language: str
   preferred_time_slot: str
   doctor_name: str
-  appointment_id: str = str(uuid.uuid4())
+  clinic_name: str
   appointment_date: str
