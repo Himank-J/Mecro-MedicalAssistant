@@ -16,6 +16,8 @@ Mecro utilizes an agentic architecture built with the FastMCP framework, enablin
 
 ## Demo 
 
+Click to watch the demo video:
+
 [![Watch how Mecro works](static/image.png)](https://www.youtube.com/watch?v=OPs7lq_Skec)
 
 ## Project Structure
