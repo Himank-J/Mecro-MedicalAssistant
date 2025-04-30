@@ -10,8 +10,15 @@ from typing import List
 from helpers.gmail_tools import GmailService
 from rich.console import Console
 from rich.panel import Panel
+from pathlib import Path
+import faiss, json, requests, numpy as np
 
 console = Console(stderr=True)
+EMBED_URL = "http://localhost:11434/api/embeddings"
+EMBED_MODEL = "nomic-embed-text"
+CHUNK_SIZE = 256
+CHUNK_OVERLAP = 40
+ROOT = Path(__file__).parent.resolve()
 
 # instantiate an MCP server client
 mcp = FastMCP("Mecro Assistant")
@@ -20,7 +27,7 @@ decision_maker = DecisionMaker()
 action = Action()
 
 # Initialize Gmail service
-gmail_service = GmailService("/Users/himank.jain/Desktop/Desktop/EAGV1/Mecro-MedicalAssistant/client_secret_787538940061-v4ledsjcugs34fkc7a7boh0cr91triod.apps.googleusercontent.com.json", "/Users/himank.jain/Desktop/Desktop/EAGV1/Mecro-MedicalAssistant/app_tokens.json")
+# gmail_service = GmailService("/Users/himank.jain/Desktop/Desktop/EAGV1/Mecro-MedicalAssistant/client_secret_787538940061-v4ledsjcugs34fkc7a7boh0cr91triod.apps.googleusercontent.com.json", "/Users/himank.jain/Desktop/Desktop/EAGV1/Mecro-MedicalAssistant/app_tokens.json")
 
 @mcp.tool()
 def get_patient_details(text: str):
@@ -88,6 +95,29 @@ async def send_reminder(recipient_id: str):
         "reminder_details": reminder_details,
     }, "medical_assistant")
     return reminder_details
+
+def get_embedding(text: str) -> np.ndarray:
+    response = requests.post(EMBED_URL, json={"model": EMBED_MODEL, "prompt": text})
+    response.raise_for_status()
+    return np.array(response.json()["embedding"], dtype=np.float32)
+
+@mcp.tool()
+def search_documents(query: str) -> list[str]:
+    """Search for relevant content from uploaded documents. Only call this tool if intent of patient is to search for relevant content from documents."""
+    try:
+        index = faiss.read_index(str(ROOT / "faiss_index" / "index.bin"))
+        metadata = json.loads((ROOT / "faiss_index" / "metadata.json").read_text())
+        query_vec = get_embedding(query).reshape(1, -1)
+        D, I = index.search(query_vec, k=5)
+        results = []
+        for idx in I[0]:
+            data = metadata[idx]
+            results.append(f"{data['chunk']}\n[Source: {data['doc']}, ID: {data['chunk_id']}]")
+        
+        parsed_results = action.parse_search_results(query, results)
+        return parsed_results
+    except Exception as e:
+        return [f"ERROR: Failed to search: {str(e)}"]
 
 @mcp.prompt()
 def debug_error(error: str) -> list[base.Message]:

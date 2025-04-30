@@ -143,3 +143,29 @@ class Action:
         self.appointments.append(appointment_details)
         console.print(Panel(f"Appointment details: {appointment_details}", title="Appointment details", title_align="center", border_style="green"))
         return appointment_details     
+
+    def parse_search_results(self, query: str, search_results: List[str]):
+        console.print(Panel(f"Searching for: {query}", title="Searching for", title_align="center", border_style="green"))
+        console.print(Panel(f"Context results: {search_results}", title="Context results", title_align="center", border_style="green"))
+        
+        PROMPT = f"""
+        You are an expert at understanding user query and context results and answering exactly what the user is asking for.
+        Given user query, understand the user's intent and analyse the context results to answer the user's query.
+        Make sure to answer is relevant, accurate and should come from the context results only.
+        
+        User query:
+        {query}
+
+        Context results:
+        {search_results}
+
+        The tone of the answer should be friendly, professional and engaging and easily understandable by a layman. Do not include patient details like name, age, gender, etc. in the answer.
+        If results contains numerical data, such as lab test results, etc. then include it in the answer by explaining it in a way that is easily understandable by a layman.
+        
+        Return plain text answer.
+        """
+        response = client.models.generate_content(
+            model='gemini-2.0-flash',
+            contents=PROMPT
+        )       
+        return response.text

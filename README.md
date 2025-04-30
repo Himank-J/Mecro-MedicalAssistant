@@ -8,6 +8,7 @@ Mecro is an AI-powered medical assistant designed to help users with various hea
 
 *   Extracting key patient details from conversations.
 *   Making preliminary decisions based on user input and conversation history.
+*   Ability to parse documents and answer questions based on the content of the documents.
 *   Suggesting relevant doctors based on symptoms or requests.
 *   Booking doctor appointments.
 *   Sending appointment reminders via email.
@@ -16,15 +17,26 @@ Mecro utilizes an agentic architecture built with the FastMCP framework, enablin
 
 ## Demo 
 
-Click to watch the demo video:
+Click to watch the demo video of below functionalities:-
 
+1.  Extracting key patient details from conversations.
+2.  Making preliminary decisions based on user input and conversation history.
+3.  Suggesting relevant doctors based on symptoms or requests.
+4.  Booking doctor appointments.
+5.  Sending appointment reminders via email.
 [![Watch how Mecro works](static/image.png)](https://www.youtube.com/watch?v=OPs7lq_Skec)
+
+Click to watch the demo video of parsing documents and answering questions based on the content of the documents.
+[![Watch how Mecro works](static/image.png)](https://drive.google.com/file/d/1bj88ziUj4PiZd4kl-yYrGFAx7QzVSMv0/view?usp=sharing)
 
 ## Project Structure
 
 ```
 /
 ├── mcp_server.py           # Main server application using FastMCP
+├── main.py                 # Main file to run the assistant
+├── doc_processor.py        # File to process uploaded documents
+├── mcp_client.py           # File to process user queries
 ├── index.html              # Frontend chat interface
 ├── layers/                 # Core cognitive layers of the agent
 │   ├── perception.py       # Handles understanding and extracting information

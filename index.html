@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mecro - Your Medical Assistant</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         :root {
             --primary-color: #2196f3;
@@ -107,6 +108,7 @@
             padding: 20px;
             border-radius: 15px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: relative;
         }
 
         input[type="text"] {
@@ -157,6 +159,135 @@
             font-size: 14px;
             color: #666;
         }
+
+        /* File upload styles */
+        .attach-btn {
+            padding: 15px;
+            border-radius: 10px;
+            margin-right: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .attach-btn i {
+            font-size: 20px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .files-badge {
+            position: absolute;
+            top: -10px;
+            left: 30px;
+            background-color: var(--secondary-color);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            display: none;
+        }
+
+        /* File list modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 15px;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            color: var(--primary-color);
+        }
+
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #555;
+        }
+
+        .file-list {
+            margin: 10px 0;
+            padding: 0;
+            list-style: none;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .file-item {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .remove-btn {
+            background: none;
+            border: none;
+            color: #f44336;
+            cursor: pointer;
+            padding: 0;
+            font-size: 14px;
+        }
+
+        .upload-status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .error {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+
+        .modal-footer {
+            margin-top: 20px;
+            display: flex;
+            justify-content: flex-end;
+        }
     </style>
 </head>
 <body>
@@ -177,8 +308,28 @@
         Mecro is typing...
     </div>
     <div class="input-container">
+        <label for="file-input" class="attach-btn">
+            <i class="material-icons">attach_file</i>
+            <span class="files-badge" id="files-badge">0</span>
+        </label>
+        <input type="file" id="file-input" class="file-input" multiple accept=".pdf,.txt,.doc,.docx">
         <input type="text" id="user-input" placeholder="Type your health-related question..." />
         <button onclick="sendMessage()" id="send-button">Send</button>
+    </div>
+
+    <!-- File list modal -->
+    <div id="file-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Attached Files</div>
+                <span class="close">&times;</span>
+            </div>
+            <ul id="file-list" class="file-list"></ul>
+            <div id="upload-status" class="upload-status"></div>
+            <div class="modal-footer">
+                <button id="upload-btn" onclick="uploadFiles()">Upload Files</button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -186,12 +337,148 @@
         const userInput = document.getElementById('user-input');
         const sendButton = document.getElementById('send-button');
         const typingIndicator = document.getElementById('typing-indicator');
+        const fileInput = document.getElementById('file-input');
+        const fileList = document.getElementById('file-list');
+        const uploadBtn = document.getElementById('upload-btn');
+        const uploadStatus = document.getElementById('upload-status');
+        const fileModal = document.getElementById('file-modal');
+        const closeModalBtn = document.querySelector('.close');
+        const filesBadge = document.getElementById('files-badge');
 
+        // Array to store selected files
+        let selectedFiles = [];
+
+        // Add event listener for chat input
         userInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 sendMessage();
             }
         });
+
+        // Add event listener for file input
+        fileInput.addEventListener('change', function() {
+            updateFileList();
+            fileModal.style.display = 'block';
+        });
+
+        // Close modal when clicking the close button
+        closeModalBtn.addEventListener('click', function() {
+            fileModal.style.display = 'none';
+        });
+
+        // Close modal when clicking outside of it
+        window.addEventListener('click', function(event) {
+            if (event.target === fileModal) {
+                fileModal.style.display = 'none';
+            }
+        });
+
+        // Function to handle file selection
+        function updateFileList() {
+            fileList.innerHTML = '';
+            selectedFiles = Array.from(fileInput.files);
+            
+            if (selectedFiles.length === 0) {
+                filesBadge.style.display = 'none';
+                return;
+            }
+            
+            // Update files badge
+            filesBadge.textContent = selectedFiles.length;
+            filesBadge.style.display = 'flex';
+            
+            selectedFiles.forEach((file, index) => {
+                const li = document.createElement('li');
+                li.className = 'file-item';
+                li.innerHTML = `
+                    <span>${file.name} (${formatFileSize(file.size)})</span>
+                    <button class="remove-btn" onclick="removeFile(${index})">Remove</button>
+                `;
+                fileList.appendChild(li);
+            });
+        }
+
+        // Function to remove a file from the list
+        function removeFile(index) {
+            selectedFiles.splice(index, 1);
+            
+            // Create a new FileList
+            const dataTransfer = new DataTransfer();
+            selectedFiles.forEach(file => {
+                dataTransfer.items.add(file);
+            });
+            
+            fileInput.files = dataTransfer.files;
+            updateFileList();
+        }
+
+        // Function to format file size
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' bytes';
+            else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+            else return (bytes / 1048576).toFixed(1) + ' MB';
+        }
+
+        // Function to upload files
+        async function uploadFiles() {
+            if (selectedFiles.length === 0) {
+                setUploadStatus('Please select at least one file', 'error');
+                return;
+            }
+            
+            uploadBtn.disabled = true;
+            setUploadStatus('Uploading files...', 'info');
+            
+            const formData = new FormData();
+            selectedFiles.forEach(file => {
+                formData.append('files', file);
+            });
+            
+            try {
+                const response = await fetch('http://localhost:8000/upload', {
+                    method: 'POST',
+                    body: formData,
+                });
+                
+                const data = await response.json();
+                console.log('data', data)
+                if (response.ok) {
+                    setUploadStatus(data.message, 'success');
+                    // Clear the file list
+                    fileInput.value = '';
+                    selectedFiles = [];
+                    fileList.innerHTML = '';
+                    filesBadge.style.display = 'none';
+                    
+                    // Close modal after successful upload
+                    setTimeout(() => {
+                        fileModal.style.display = 'none';
+                    }, 2000);
+                    
+                    // Add system message about document processing
+                    addMessage(`${data.response}`, 'assistant');
+                } else {
+                    setUploadStatus(`Error: ${data.detail || 'Failed to upload files'}`, 'error');
+                }
+            } catch (error) {
+                setUploadStatus(`Error: ${error.message}`, 'error');
+            } finally {
+                uploadBtn.disabled = false;
+            }
+        }
+
+        // Function to set upload status message
+        function setUploadStatus(message, type) {
+            uploadStatus.textContent = message;
+            uploadStatus.className = `upload-status ${type}`;
+            uploadStatus.style.display = 'block';
+            
+            if (type === 'success') {
+                setTimeout(() => {
+                    uploadStatus.style.display = 'none';
+                }, 5000);
+            }
+        }
 
         async function sendMessage() {
             const message = userInput.value.trim();

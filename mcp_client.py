@@ -112,6 +112,7 @@ async def process_query(query: str) -> str:
                 2. Make a decision on what to do next based on patient's input and memory (past interactions)
                 3. Basis patient's preferences, provide relevant doctor suggestions from list of available doctors and book an appointment if required
                 4. Additionally you can send reminders to patient for their appointments via email if they have provided their email address
+                5. If patient has uploaded any documents, you can search for relevant content from the documents and return relevant results to patient's query
                 
                 GUIDELINES:
                 - Never book appointment without suggesting a doctor first.
@@ -120,6 +121,7 @@ async def process_query(query: str) -> str:
                 - Try to suggest multiple doctors as long as they are relevant to patient's preferences. Let patient decide which doctor to choose.
                 - Once appointment is booked return appointment details in a structured format.
                 - After each step take input from patient to see if they are satisfied with the current step.
+                - Do not call search_documents tool if patient has not uploaded any documents.
                 
                 For facilitating your work, you have access to the following tools:
                 {tools_description}
@@ -128,10 +130,14 @@ async def process_query(query: str) -> str:
                 1. For function calls:
                 FUNCTION_CALL: function_name|param1|param2|...
                 
-                2. For final answers:
+                2. For gathering additional information from patient:
+                ADDITIONAL_INFO: [output]
+                
+                3. For final answers:
                 FINAL_ANSWER: [output]
 
                 Important:
+                - If you are not sure about the answer, you can ask for additional information from patient using ADDITIONAL_INFO tool.
                 - Do not repeat function calls with the same parameters. Try to minimise number of iterations
                 - DO NOT include any explanations or additional text.
                 - Your entire response should be a single line starting with either FUNCTION_CALL: or FINAL_ANSWER:
@@ -233,12 +239,13 @@ async def process_query(query: str) -> str:
                             return f"Error: {str(e)}"
 
                     elif response_text.startswith("FINAL_ANSWER:"):
-                        final_response = response_text.replace("FINAL_ANSWER:", "").strip()
+                        final_response = response_text.replace("FINAL_ANSWER:", "").replace("[", "").replace("]", "").strip()
                         break
                         
                     elif response_text.startswith("ADDITIONAL_INFO:"):
                         # For ADDITIONAL_INFO, just return the response text after stripping the prefix
-                        return response_text.replace("ADDITIONAL_INFO:", "").strip()
+                        final_response = response_text.replace("ADDITIONAL_INFO:", "").strip()
+                        break
 
                     iteration += 1
 
